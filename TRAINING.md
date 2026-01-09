@@ -177,10 +177,14 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 - FocalLoss: Handles class imbalance
 - BinaryDiceLoss: Optimizes for segmentation overlap
 
-# Learning Rate Schedule
+# Learning Rate Schedule (Note: Code has very aggressive decay)
 - Epoch 0-39: lr = 0.0001
-- Epoch 40-79: lr = 0.0001 * 0.00001 = 1e-9
-- Epoch 80-99: lr = 1e-9 * 0.000001 = 1e-15
+- Epoch 40-79: lr *= 0.00001 (becomes 1e-9)
+- Epoch 80-99: lr *= 0.000001 (becomes 1e-15)
+
+Note: The learning rate schedule in train.py appears to have extremely aggressive 
+decay that may not provide meaningful updates in later epochs. This may be a 
+bug in the original code (uses undefined 'optimizer_Adam' instead of 'optimizer').
 ```
 
 **Training Loop:**
@@ -362,7 +366,7 @@ python main.py --dataset real --task Multi-Class --k_class 3 --model_pth ./point
 
 5. **Memory Requirements:** Real3D-AD test files can be large; voxel downsampling is essential
 
-6. **Performance Note:** Paper reports better results when Real3D-AD is converted to TIFF format with organized structure (similar to MVTec 3D-AD), but current implementation uses raw point clouds
+6. **Performance Note:** Paper reports better results when Real3D-AD is converted to TIFF format with organized structure (similar to MVTec 3D-AD), but current implementation uses raw point clouds.
 
 ---
 
